@@ -3,7 +3,13 @@ import bgg
 
 def lambda_handler(event, context):
     
-    username = "kvalle"
+    try:
+        username = event["pathParameters"]["username"]
+    except:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({"error": "No username"})
+        }
     
     try:
         games = bgg.get_games_by_username(username)
