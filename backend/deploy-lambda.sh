@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+./package-lambda.sh
 
 function_arn="arn:aws:lambda:eu-north-1:017978203355:function:tabletop-collection-test"
 
