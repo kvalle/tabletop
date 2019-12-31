@@ -12,6 +12,9 @@ import xmltodict
 class BggError(Exception):
 	pass
 
+class BggProcessing(Exception):
+	pass
+
 def get_games_by_username(username):
 	collection = get_collection(username)
 
@@ -48,26 +51,15 @@ def get_collection(username):
 		} for game in collection_data["items"]["item"]]
 
 
-def get_collection_xml(username, max_retries = 30):
+def get_collection_xml(username):
 	url = 'https://www.boardgamegeek.com/xmlapi2/collection?username='+username+'&own=1&excludesubtype=boardgameexpansion'
 	collection_request = requests.get(url)
-
-	retries = 0
-
-	while collection_request.status_code == 202:
-		if retries > max_retries:
-			break
-
-		time.sleep(2.0)
-		retries += 1
-
-		collection_request = requests.get(url)
 
 	if collection_request.status_code == 200:
 		return collection_request.text
 
 	elif collection_request.status_code == 202:
-		raise BggError("Still waiting for BGG to process after " + str(max_retries) + " retries")
+		raise BggProcessing()
 
 	else:
 		raise BggError("API error [" + collection_request.status_code + "] while getting collection: " + r.text)

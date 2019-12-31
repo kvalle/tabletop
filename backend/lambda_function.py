@@ -13,19 +13,30 @@ def lambda_handler(event, context):
     
     try:
         games = bgg.get_games_by_username(username)
-        games_json = json.dumps(games, indent=2)
     
         return {
             'statusCode': 200,
-            'body': games_json
+            'body': json.dumps({
+                    "status": "SUCCESS",
+                    "games": games
+                } , indent=2)
         }
     
+    except bgg.BggProcessing:
+        return {
+            'statusCode': 202,
+            'body': json.dumps({"status": "PROCESSING"})
+        }
+
     except bgg.BggError as err:
         print("ERROR: ", err)
         
         return {
             'statusCode': 500,
-            'body': json.dumps({"error": "Problem with the integration with BGG"})
+            'body': json.dumps({
+                "status": "ERROR",
+                "message": "Problem with the integration with BGG"
+            })
         }
     
     except Exception:
@@ -34,5 +45,8 @@ def lambda_handler(event, context):
         
         return {
             'statusCode': 500,
-            'body': json.dumps({"error": "A problem occurred"})
+            'body': json.dumps({
+                "status": "ERROR",
+                "message": "An unexpected problem occurred"
+            })
         }
