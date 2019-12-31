@@ -107,6 +107,6 @@ def get_name(game):
 
 def get_year(game):
 	if "yearpublished" in game:
-		game["yearpublished"]
+		return game["yearpublished"]
 	else:
 		return None
