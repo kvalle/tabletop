@@ -7,4 +7,12 @@ import Model exposing (Model)
 
 view : Model -> Html Msg
 view model =
-    text "lol"
+    div []
+        [ h1 []
+            [ text "Board game collection of BGG user "
+            , em [] [ text model.username ]
+            ]
+        , p []
+            [ text "Loading"
+            ]
+        ]
