@@ -3,31 +3,35 @@ module Backend exposing (getCollection)
 import Data.GamesRequest as GamesRequest exposing (GamesRequest(..))
 import Http
 import Json.Decode
-import Messages exposing (Msg(..))
 import Result
 import Result.Extra as Result
+import Task exposing (Task)
 
 
 apiEndpoint =
     "https://ldm35m3519.execute-api.eu-north-1.amazonaws.com/api"
 
 
-getCollection : String -> Cmd Msg
+getCollection : String -> Task Http.Error GamesRequest
 getCollection username =
-    Http.get
-        { expect = expectGamesResponse
+    Http.task
+        { method = "GET"
+        , headers = []
+        , body = Http.emptyBody
+        , timeout = Nothing
+        , resolver = gamesRequestResolver
         , url = apiEndpoint ++ "/collection/" ++ username
         }
 
 
-expectGamesResponse : Http.Expect Msg
-expectGamesResponse =
+gamesRequestResolver : Http.Resolver Http.Error GamesRequest
+gamesRequestResolver =
     let
         decodeWith decoder body =
             Json.Decode.decodeString decoder body
                 |> Result.mapError (\err -> Http.BadBody <| Json.Decode.errorToString err)
     in
-    Http.expectStringResponse GameCollectionReceived <|
+    Http.stringResolver <|
         \response ->
             case response of
                 Http.BadUrl_ url ->

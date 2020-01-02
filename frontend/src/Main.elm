@@ -15,11 +15,16 @@ import View exposing (view)
 
 init : Json.Decode.Value -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( { username = "kvalle"
-      , gamesRequest = Requesting
-      , navKey = key
-      }
-    , Backend.getCollection "kvalle"
+    let
+        model =
+            { username = "rahdo"
+            , gamesRequest = Requesting
+            , navKey = key
+            }
+    in
+    ( model
+    , Backend.getCollection model.username
+        |> Task.attempt GameCollectionReceived
     )
 
 

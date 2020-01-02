@@ -1,9 +1,12 @@
 module Update exposing (update)
 
+import Backend
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.GamesRequest as GamesRequest
 import Messages exposing (Msg(..))
+import Process
+import Task
 import Url
 
 
@@ -26,7 +29,13 @@ update msg model =
 
         GameCollectionReceived (Ok gamesRequest) ->
             ( { model | gamesRequest = gamesRequest }
-            , Cmd.none
+            , if gamesRequest == GamesRequest.BggProcessing then
+                Process.sleep 2
+                    |> Task.andThen (\_ -> Backend.getCollection model.username)
+                    |> Task.attempt GameCollectionReceived
+
+              else
+                Cmd.none
             )
 
         GameCollectionReceived (Err _) ->
