@@ -17,7 +17,7 @@ init : Json.Decode.Value -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         model =
-            { username = "rahdo"
+            { username = "kvalle"
             , gamesRequest = Requesting
             , navKey = key
             }

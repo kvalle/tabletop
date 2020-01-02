@@ -3,6 +3,7 @@ module View exposing (view)
 import Data.Game as Game exposing (Game)
 import Data.GamesRequest exposing (GamesRequest(..))
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Messages exposing (Msg)
 import Model exposing (Model)
 
@@ -34,4 +35,10 @@ displayGame : Game -> Html Msg
 displayGame game =
     li []
         [ text game.title
+        , br [] []
+        , img
+            [ src game.thumbnailUrl
+            , alt <| "Cover image for " ++ game.title
+            ]
+            []
         ]
