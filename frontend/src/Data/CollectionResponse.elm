@@ -1,5 +1,5 @@
-module Data.GamesRequest exposing
-    ( GamesRequest(..)
+module Data.CollectionResponse exposing
+    ( CollectionResponse(..)
     , errorDecoder
     , processingDecoder
     , successDecoder
@@ -9,21 +9,20 @@ import Data.Game as Game exposing (Game)
 import Json.Decode as Decode exposing (Decoder)
 
 
-type GamesRequest
-    = Requesting
-    | BggProcessing
+type CollectionResponse
+    = BggProcessing
     | Success (List Game)
     | Error String
 
 
-successDecoder : Decoder GamesRequest
+successDecoder : Decoder CollectionResponse
 successDecoder =
     Decode.map Success <|
         Decode.field "games" <|
             Decode.list Game.decoder
 
 
-processingDecoder : Decoder GamesRequest
+processingDecoder : Decoder CollectionResponse
 processingDecoder =
     Decode.field "status" Decode.string
         |> Decode.andThen
@@ -36,7 +35,7 @@ processingDecoder =
             )
 
 
-errorDecoder : Decoder GamesRequest
+errorDecoder : Decoder CollectionResponse
 errorDecoder =
     Decode.map Error <|
         Decode.field "message" Decode.string

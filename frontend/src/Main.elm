@@ -3,7 +3,7 @@ module Main exposing (main)
 import Backend
 import Browser
 import Browser.Navigation as Navigation
-import Data.GamesRequest exposing (GamesRequest(..))
+import Data.CollectionStatus as CollectionStatus
 import Json.Decode
 import Messages exposing (Msg(..))
 import Model exposing (Model)
@@ -17,13 +17,14 @@ init : Json.Decode.Value -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         model =
-            { username = "kvalle"
-            , gamesRequest = Requesting
+            { collection = CollectionStatus.Requesting "kvalle"
             , navKey = key
             }
     in
     ( model
-    , Backend.getCollection model.username
+    , model.collection
+        |> CollectionStatus.getUsername
+        |> Backend.getCollection
         |> Task.attempt GameCollectionReceived
     )
 

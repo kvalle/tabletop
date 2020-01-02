@@ -1,11 +1,10 @@
 module Model exposing (Model)
 
 import Browser.Navigation as Nav
-import Data.GamesRequest exposing (GamesRequest)
+import Data.CollectionStatus exposing (CollectionStatus)
 
 
 type alias Model =
-    { username : String
-    , gamesRequest : GamesRequest
+    { collection : CollectionStatus
     , navKey : Nav.Key
     }

@@ -1,7 +1,7 @@
 module View exposing (view)
 
+import Data.CollectionStatus as CollectionStatus exposing (CollectionStatus(..))
 import Data.Game as Game exposing (Game)
-import Data.GamesRequest exposing (GamesRequest(..))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Messages exposing (Msg)
@@ -13,20 +13,24 @@ view model =
     div []
         [ h1 []
             [ text "Board game collection of BGG user "
-            , em [] [ text model.username ]
+            , em []
+                [ model.collection
+                    |> CollectionStatus.getUsername
+                    |> text
+                ]
             ]
-        , case model.gamesRequest of
-            Success games ->
+        , case model.collection of
+            Success _ games ->
                 ul [] <|
                     List.map displayGame games
 
-            BggProcessing ->
+            BggProcessing _ ->
                 p [] [ text "Waiting for BGG to process the games" ]
 
-            Requesting ->
+            Requesting _ ->
                 p [] [ text "Loading" ]
 
-            Error _ ->
+            Error _ _ ->
                 p [] [ text "Something went wrong :(" ]
         ]
 

@@ -3,13 +3,16 @@ module Update exposing (update)
 import Backend
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
-import Data.GamesRequest as GamesRequest
+import Data.CollectionResponse as CollectionResponse
+import Data.CollectionStatus as CollectionStatus
 import Messages exposing (Msg(..))
+import Model exposing (Model)
 import Process
 import Task
 import Url
 
 
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         LinkClicked urlRequest ->
@@ -27,11 +30,15 @@ update msg model =
         UrlChanged url ->
             ( model, Cmd.none )
 
-        GameCollectionReceived (Ok gamesRequest) ->
-            ( { model | gamesRequest = gamesRequest }
-            , if gamesRequest == GamesRequest.BggProcessing then
+        GameCollectionReceived (Ok response) ->
+            let
+                username =
+                    CollectionStatus.getUsername model.collection
+            in
+            ( { model | collection = CollectionStatus.fromResponse username response }
+            , if response == CollectionResponse.BggProcessing then
                 Process.sleep 2
-                    |> Task.andThen (\_ -> Backend.getCollection model.username)
+                    |> Task.andThen (\_ -> Backend.getCollection username)
                     |> Task.attempt GameCollectionReceived
 
               else
@@ -39,6 +46,11 @@ update msg model =
             )
 
         GameCollectionReceived (Err _) ->
-            ( { model | gamesRequest = GamesRequest.Error "Server Error" }
+            ( { model
+                | collection =
+                    CollectionStatus.Error
+                        (CollectionStatus.getUsername model.collection)
+                        "Server Error"
+              }
             , Cmd.none
             )

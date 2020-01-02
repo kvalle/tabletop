@@ -1,6 +1,6 @@
 module Backend exposing (getCollection)
 
-import Data.GamesRequest as GamesRequest exposing (GamesRequest(..))
+import Data.CollectionResponse as CollectionResponse exposing (CollectionResponse(..))
 import Http
 import Json.Decode
 import Result
@@ -12,7 +12,7 @@ apiEndpoint =
     "https://ldm35m3519.execute-api.eu-north-1.amazonaws.com/api"
 
 
-getCollection : String -> Task Http.Error GamesRequest
+getCollection : String -> Task Http.Error CollectionResponse
 getCollection username =
     Http.task
         { method = "GET"
@@ -24,7 +24,7 @@ getCollection username =
         }
 
 
-gamesRequestResolver : Http.Resolver Http.Error GamesRequest
+gamesRequestResolver : Http.Resolver Http.Error CollectionResponse
 gamesRequestResolver =
     let
         decodeWith decoder body =
@@ -44,11 +44,11 @@ gamesRequestResolver =
                     Err Http.NetworkError
 
                 Http.BadStatus_ metadata body ->
-                    decodeWith GamesRequest.errorDecoder body
+                    decodeWith CollectionResponse.errorDecoder body
 
                 Http.GoodStatus_ metadata body ->
                     if metadata.statusCode == 202 then
-                        decodeWith GamesRequest.processingDecoder body
+                        decodeWith CollectionResponse.processingDecoder body
 
                     else
-                        decodeWith GamesRequest.successDecoder body
+                        decodeWith CollectionResponse.successDecoder body
