@@ -1,16 +1,12 @@
 module Data.CollectionStatus exposing
     ( CollectionStatus(..)
-    , Username
     , fromResponse
     , getUsername
     )
 
 import Data.CollectionResponse as CollectionResponse exposing (CollectionResponse)
 import Data.Game exposing (Game)
-
-
-type alias Username =
-    String
+import Data.Username exposing (Username)
 
 
 type CollectionStatus

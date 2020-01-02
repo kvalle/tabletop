@@ -4,6 +4,7 @@ import Backend
 import Browser
 import Browser.Navigation as Navigation
 import Data.CollectionStatus as CollectionStatus
+import Data.Username as Username
 import Json.Decode
 import Messages exposing (Msg(..))
 import Model exposing (Model)
@@ -17,7 +18,7 @@ init : Json.Decode.Value -> Url.Url -> Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         model =
-            { collection = CollectionStatus.Requesting "kvalle"
+            { collection = CollectionStatus.Requesting (Username.fromString "kvalle")
             , navKey = key
             }
     in

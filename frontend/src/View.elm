@@ -2,6 +2,7 @@ module View exposing (view)
 
 import Data.CollectionStatus as CollectionStatus exposing (CollectionStatus(..))
 import Data.Game as Game exposing (Game)
+import Data.Username as Username exposing (Username)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Messages exposing (Msg)
@@ -16,6 +17,7 @@ view model =
             , em []
                 [ model.collection
                     |> CollectionStatus.getUsername
+                    |> Username.toString
                     |> text
                 ]
             ]

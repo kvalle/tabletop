@@ -1,6 +1,7 @@
 module Backend exposing (getCollection)
 
 import Data.CollectionResponse as CollectionResponse exposing (CollectionResponse(..))
+import Data.Username as Username exposing (Username)
 import Http
 import Json.Decode
 import Result
@@ -12,7 +13,7 @@ apiEndpoint =
     "https://ldm35m3519.execute-api.eu-north-1.amazonaws.com/api"
 
 
-getCollection : String -> Task Http.Error CollectionResponse
+getCollection : Username -> Task Http.Error CollectionResponse
 getCollection username =
     Http.task
         { method = "GET"
@@ -20,7 +21,7 @@ getCollection username =
         , body = Http.emptyBody
         , timeout = Nothing
         , resolver = gamesRequestResolver
-        , url = apiEndpoint ++ "/collection/" ++ username
+        , url = apiEndpoint ++ "/collection/" ++ Username.toString username
         }
 
 
